@@ -11,13 +11,34 @@ app.use(cors());
 app.use(express.json());
 
 const uri =
-  "mongodb+srv://doctors_admin:y0DSOZWhSMKFkUYj@cluster0.6iamp.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://todo_app:sddsrSJiVYBJAs5p@cluster0.prm7h.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
 
+
+async function run() {
+  try {
+        await client.connect();
+        const todoCollection = client.db("todoNode").collection("todos");
+    console.log("connect");
+
+        // load data  from mongodbdb
+        app.get("/todos", async (req, res) => {
+          const query = {};
+          const cursor = todoCollection.find(query);
+          const todos = await cursor.toArray();
+          res.send(todos);
+        });
+
+        
+  } finally {
+  }
+}
+
+run().catch(console.dir);
 
 app.get("/", (req, res) => {
   res.send("Running To do App server");
